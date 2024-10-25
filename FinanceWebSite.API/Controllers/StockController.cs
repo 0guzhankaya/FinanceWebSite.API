@@ -1,4 +1,5 @@
 ﻿using FinanceWebSite.API.Data;
+using FinanceWebSite.API.Mappers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,9 @@ namespace FinanceWebSite.API.Controllers
 		[HttpGet]
 		public IActionResult GetAll()
 		{
-			var stocks = _context.Stocks.ToList();
+			var stocks = _context.Stocks.ToList()
+			.Select(s => s.ToStockDto());
+
 			return Ok(stocks);
 		}
 
@@ -32,7 +35,7 @@ namespace FinanceWebSite.API.Controllers
 			if (stock == null)
 				return NotFound();
 
-			return Ok(stock);
+			return Ok(stock.ToStockDto());
 		}
 	}
 }
