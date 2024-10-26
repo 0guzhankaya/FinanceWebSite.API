@@ -2,11 +2,13 @@ using FinanceWebSite.API.Contracts;
 using FinanceWebSite.API.Data;
 using FinanceWebSite.API.Models;
 using FinanceWebSite.API.Repository;
+using FinanceWebSite.API.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +50,7 @@ builder.Services.AddAuthentication(options =>
 		ValidateAudience = true,
 		ValidAudience = builder.Configuration["JWT:Audience"],
 		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(
-			System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
 	};
 }
 );
@@ -59,8 +60,10 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
+
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
