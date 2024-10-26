@@ -1,6 +1,7 @@
 ﻿using FinanceWebSite.API.Contracts;
 using FinanceWebSite.API.Data;
 using FinanceWebSite.API.Dtos.Stock;
+using FinanceWebSite.API.Helpers;
 using FinanceWebSite.API.Mappers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +23,12 @@ namespace FinanceWebSite.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAll()
+		public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
-			var stocks = await _stockRepository.GetAllAsync();
+			var stocks = await _stockRepository.GetAllAsync(query);
 			var stockDto = stocks.Select(s => s.ToStockDto());
 
 			return Ok(stockDto);
