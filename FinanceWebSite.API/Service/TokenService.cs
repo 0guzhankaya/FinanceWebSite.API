@@ -1,5 +1,6 @@
 ﻿using FinanceWebSite.API.Contracts;
 using FinanceWebSite.API.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,10 +13,17 @@ namespace FinanceWebSite.API.Service
 		private readonly IConfiguration _configuration;
 		private readonly SymmetricSecurityKey _symmetricSecurityKey;
 
-		public TokenService(IConfiguration configuration, SymmetricSecurityKey symmetricSecurityKey)
+		public TokenService(IConfiguration configuration)
 		{
 			_configuration = configuration;
-			_symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
+
+			// IConfiguration üzerinden SigningKey değerini alarak SymmetricSecurityKey oluşturuyoruz
+			var signingKey = _configuration["JWT:SigningKey"];
+			if (string.IsNullOrEmpty(signingKey))
+			{
+				throw new InvalidOperationException("Signing key is not configured.");
+			}
+			_symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
 		}
 
 		public string CreateToken(AppUser user)
@@ -38,7 +46,6 @@ namespace FinanceWebSite.API.Service
 			};
 
 			var tokenHandler = new JwtSecurityTokenHandler();
-
 			var token = tokenHandler.CreateToken(tokenDescriptor);
 
 			return tokenHandler.WriteToken(token);

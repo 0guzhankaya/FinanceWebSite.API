@@ -3,6 +3,7 @@ using FinanceWebSite.API.Data;
 using FinanceWebSite.API.Dtos.Stock;
 using FinanceWebSite.API.Helpers;
 using FinanceWebSite.API.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace FinanceWebSite.API.Controllers
 			_context = context;
 		}
 
+		[Authorize]
 		[HttpGet]
 		public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
 		{
