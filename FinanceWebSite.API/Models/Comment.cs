@@ -11,5 +11,7 @@ namespace FinanceWebSite.API.Models
 		public DateTime CreateOn { get; set; } = DateTime.Now;
 		public int? StockId { get; set; } // Foreign Key Property
 		public Stock? Stock { get; set; } // Navigation Property
+		public string AppUserId { get; set; }
+		public AppUser AppUser { get; set; } // Navigation Property
 	}
 }

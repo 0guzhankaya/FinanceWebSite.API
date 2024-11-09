@@ -113,7 +113,7 @@ namespace FinanceWebSite.API.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("FinanceWebSite.API.Models.Portfolio", b =>
@@ -128,7 +128,7 @@ namespace FinanceWebSite.API.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("Portfolios");
+                    b.ToTable("Portfolios", (string)null);
                 });
 
             modelBuilder.Entity("FinanceWebSite.API.Models.Stock", b =>
@@ -162,7 +162,7 @@ namespace FinanceWebSite.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stocks", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

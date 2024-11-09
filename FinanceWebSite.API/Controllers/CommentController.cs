@@ -1,8 +1,10 @@
 ﻿using FinanceWebSite.API.Contracts;
 using FinanceWebSite.API.Dtos.Comment;
+using FinanceWebSite.API.Extensions;
 using FinanceWebSite.API.Mappers;
 using FinanceWebSite.API.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceWebSite.API.Controllers
@@ -13,11 +15,13 @@ namespace FinanceWebSite.API.Controllers
 	{
 		private readonly ICommentRepository _commentRepository;
 		private readonly IStockRepository _stockRepository;
+		private readonly UserManager<AppUser> _userManager;
 
-		public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository)
+		public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository, UserManager<AppUser> userManager)
 		{
 			_commentRepository = commentRepository;
 			_stockRepository = stockRepository;
+			_userManager = userManager;
 		}
 
 		[HttpGet]
@@ -56,7 +60,11 @@ namespace FinanceWebSite.API.Controllers
 			if (!await _stockRepository.StockExists(stockId))
 				return BadRequest("Stock does not exist.");
 
+			var username = User.GetUsername();
+			var appUser = await _userManager.FindByNameAsync(username);
+
 			var commentModel = commentDto.ToCommentFromCreate(stockId);
+			commentModel.AppUserId = appUser.Id;
 			await _commentRepository.CreateAsync(commentModel);
 
 			return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
